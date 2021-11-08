@@ -1,4 +1,4 @@
-import { Button, Container, Dialog, DialogActions, DialogContent, DialogTitle, Grid, Paper, TextField, Typography } from "@mui/material";
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Grid, Paper, TextField, Typography } from "@mui/material";
 import { useStyles } from "../styles/styles";
 import AddIcon from '@mui/icons-material/Add';
 import { useState } from "react";
@@ -8,6 +8,29 @@ const AddButton = props => {
     const [open, setOpen] = useState(false);
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
+
+    const [name, setName] = useState('');
+    const [url, setUrl] = useState('');
+
+    const handleNameChange = event => setName(event.target.value);
+    const handleUrlChange = event => setUrl(event.target.value);
+
+    var xhr;
+
+    const addService = () => {
+        xhr = new XMLHttpRequest();
+        xhr.open("POST", "/api/services");
+        xhr.send(JSON.stringify({ name: name, url: url }));
+        xhr.addEventListener("readystatechange", processRequest, false);
+    }
+
+    const processRequest = () => {
+        if (xhr.readyState === 4 && xhr.status === 200) {
+            setOpen(false);
+            setName('');
+            setUrl('');
+        }
+    }
 
     return (
         <>
@@ -28,12 +51,16 @@ const AddButton = props => {
                         label="Name of service"
                         fullWidth
                         variant="filled"
+                        value={name}
+                        onChange={handleNameChange}
                     />
                     <TextField
                         label="URL"
                         fullWidth
                         variant="filled"
                         style={{marginTop: '8px'}}
+                        value={url}
+                        onChange={handleUrlChange}
                     />
                 </DialogContent>
                 <DialogActions>
@@ -41,7 +68,7 @@ const AddButton = props => {
                         onClick={handleClose}
                     >Cancel</Button>
                     <Button
-                        onClick={handleClose}
+                        onClick={addService}
                         variant="contained"
                     >Confirm</Button>
                 </DialogActions>
