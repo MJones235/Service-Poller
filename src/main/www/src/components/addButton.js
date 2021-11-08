@@ -11,6 +11,7 @@ const AddButton = props => {
 
     const [name, setName] = useState('');
     const [url, setUrl] = useState('');
+    const [error, setError] = useState('');
 
     const handleNameChange = event => setName(event.target.value);
     const handleUrlChange = event => setUrl(event.target.value);
@@ -25,10 +26,18 @@ const AddButton = props => {
     }
 
     const processRequest = () => {
-        if (xhr.readyState === 4 && xhr.status === 200) {
-            setOpen(false);
-            setName('');
-            setUrl('');
+        if (xhr.readyState === 4) {
+            console.log(xhr);
+            var response = JSON.parse(xhr.responseText.replaceAll("\'", "\""));
+            if (xhr.status === 200) {
+                props.sendRequest();
+                setOpen(false);
+                setName('');
+                setUrl('');
+                setError('');
+            } else {
+                setError(response['error']);
+            }
         }
     }
 
@@ -62,6 +71,7 @@ const AddButton = props => {
                         value={url}
                         onChange={handleUrlChange}
                     />
+                    <Typography className={classes.error}>{error}</Typography>
                 </DialogContent>
                 <DialogActions>
                     <Button

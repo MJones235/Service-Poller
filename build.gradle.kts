@@ -33,6 +33,8 @@ dependencies {
   implementation("io.vertx:vertx-mysql-client")
   implementation("commons-validator:commons-validator:1.7")
   implementation("com.fasterxml.jackson.core:jackson-databind:2.0.1")
+  implementation("io.vertx:vertx-jdbc-client:4.2.1")
+  implementation("org.hibernate.reactive:hibernate-reactive-core:1.0.1.Final")
   testImplementation("io.vertx:vertx-junit5")
   testImplementation("org.junit.jupiter:junit-jupiter:$junitJupiterVersion")
 }

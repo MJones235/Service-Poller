@@ -37,11 +37,14 @@ function App() {
   return (
     <div className="App">
       <Grid container className={classes.grid} spacing={2} rowSpacing={2}>
-        <AddButton />
+        <AddButton 
+          sendRequest={sendRequest}
+        />
         {
           services.map(service =>
               <ServiceCard  
                 key={service.id}
+                service={service}
               />
             )
         }

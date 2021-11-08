@@ -9,10 +9,10 @@ const ServiceCard = props => {
     return(
         <Grid item xs={12} sm={6} md={6} lg={4}>
             <Paper className={classes.paper}>
-                <Typography variant="h4" className={classes.name}>Placeholder Name</Typography>
-                <Typography variant="h5" className={classes.url}>http://someurl.com</Typography>
-                <Typography className={classes.createdAt}>Created at 01/01/2021 21:22:20</Typography>
-                <Typography>Last updated at 01/01/2021 21:22:20</Typography>
+                <Typography variant="h4" className={classes.name}>{props.service.name}</Typography>
+                <Typography variant="h5" className={classes.url}>{props.service.url}</Typography>
+                <Typography className={classes.createdAt}>Created at {props.service.created}</Typography>
+                <Typography>Last updated at {props.service.lastUpdated}</Typography>
                 <StatusIndicator
                     status={status.OK}
                 />

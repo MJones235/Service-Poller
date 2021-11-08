@@ -2,11 +2,31 @@ package com.mjones.service_poller;
 
 import java.util.UUID;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+
+@Entity
 public class Service {
+
+    @Id
+    @Column(unique = true, nullable = false)
     private UUID id;
+
+    @Column(nullable = false)
     private String name;
+
+    @Column(nullable = false)
     private String url;
+
+    @Column
     private Status status;
+
+    @Column(nullable = false)
+    private String created;
+
+    @Column(nullable = false)
+    private String lastUpdated;
 
     public Service() {}
 
@@ -31,6 +51,14 @@ public class Service {
     public Status getStatus() {
         return status;
     } 
+
+    public String getCreated() {
+        return created;
+    }
+
+    public String getLastUpdated() {
+        return lastUpdated;
+    }
     
     public void setId(UUID id) {
         this.id = id;
@@ -46,5 +74,13 @@ public class Service {
 
     public void setStatus(Status status) {
         this.status = status;
+    }
+
+    public void setCreated(String created) {
+        this.created = created;
+    }
+
+    public void setLastUpdated(String lastUpdated) {
+        this.lastUpdated = lastUpdated;
     }
 }

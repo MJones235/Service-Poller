@@ -49,4 +49,9 @@ export const useStyles = makeStyles({
         justifyContent: 'space-between',
         alignItems: 'center'
     },
+    error: {
+        color: 'red',
+        textAlign: 'center',
+        paddingTop: '16px'
+    }
 });
