@@ -50,7 +50,7 @@ export const useStyles = makeStyles({
         marginTop: '16px',
         textAlign: 'center',
         borderRadius: '4px',
-        backgroundColor: 'orange'
+        backgroundColor: 'peachpuff'
     },
     row: {
         display: 'flex',

@@ -41,8 +41,8 @@ public class MainVerticle extends AbstractVerticle {
     });
 
     router.get("/services/get").handler(ctx -> getServices(ctx, vertx));
-
     router.post("/services/create").handler(ctx -> postService(ctx, vertx));
+    router.post("/services/delete").handler(ctx -> deleteService(ctx, vertx));
 
     server.requestHandler(router).listen(8080, http -> {
       if (http.succeeded()) {
@@ -52,8 +52,6 @@ public class MainVerticle extends AbstractVerticle {
         LOGGER.info("Error: " + http.cause());
       }
     });
-
-
   }
 
   private void getServices(RoutingContext ctx, Vertx vertx) {
@@ -90,6 +88,19 @@ public class MainVerticle extends AbstractVerticle {
         }
       );
     }
+  }
+
+  private void deleteService(RoutingContext ctx, Vertx vertx) {
+    final String bodyJson = ctx.getBodyAsString();
+    final Service service = Json.decodeValue(bodyJson, Service.class);
+    vertx.eventBus().request("services.services-delete", Json.encode(service),
+      res -> {
+        if (res.succeeded()) {
+          LOGGER.info("Deleted service with id " + service.getId());
+        } else {
+          LOGGER.info(res.cause());
+        }
+      });
   }
 
   private static void returnError(RoutingContext ctx, String message) {

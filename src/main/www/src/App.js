@@ -45,6 +45,7 @@ function App() {
               <ServiceCard  
                 key={service.id}
                 service={service}
+                sendRequest={sendRequest}
               />
             )
         }

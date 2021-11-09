@@ -43,7 +43,19 @@ public class ServiceRepository extends AbstractVerticle {
 
             });
         });
+
+        vertx.eventBus().consumer("services.services-delete", msg -> {
+            Service service = Json.decodeValue((String)msg.body(), Service.class);
+            database.query("DELETE FROM SERVICES WHERE id = ?;", 
+                new JsonArray()
+                    .add(service.getId())
+            ).onSuccess(res -> {
+                services.removeIf(s -> s.getId() == service.getId());
+                msg.reply("Deleted");
+            });
+        });
     }
+
 
     private List<Service> updateServices(ResultSet res) {
         List<Service> services = new ArrayList<>();
