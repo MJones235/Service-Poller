@@ -34,6 +34,7 @@ dependencies {
   implementation("commons-validator:commons-validator:1.7")
   implementation("com.fasterxml.jackson.core:jackson-databind:2.0.1")
   implementation("org.xerial:sqlite-jdbc:3.7.2")
+  implementation("io.vertx:vertx-web-client:4.2.1")
 
   testImplementation("io.vertx:vertx-junit5")
   testImplementation("org.junit.jupiter:junit-jupiter:$junitJupiterVersion")

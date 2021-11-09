@@ -14,7 +14,7 @@ const ServiceCard = props => {
                 <Typography className={classes.createdAt}>Created at {props.service.created}</Typography>
                 <Typography>Last updated at {props.service.lastUpdated}</Typography>
                 <StatusIndicator
-                    status={status.OK}
+                    status={props.service.status}
                 />
             </Paper>
         </Grid>

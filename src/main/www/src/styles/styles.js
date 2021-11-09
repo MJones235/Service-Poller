@@ -43,6 +43,15 @@ export const useStyles = makeStyles({
         borderRadius: '4px',
         backgroundColor: 'lightpink'
     },
+    pending: {
+        border: '4px solid darkorange',
+        color: 'red',
+        padding: '8px',
+        marginTop: '16px',
+        textAlign: 'center',
+        borderRadius: '4px',
+        backgroundColor: 'orange'
+    },
     row: {
         display: 'flex',
         flexDirection: 'row',

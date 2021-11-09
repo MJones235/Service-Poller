@@ -20,7 +20,7 @@ const AddButton = props => {
 
     const addService = () => {
         xhr = new XMLHttpRequest();
-        xhr.open("POST", "/api/services");
+        xhr.open("POST", "/services/create");
         xhr.send(JSON.stringify({ name: name, url: url }));
         xhr.addEventListener("readystatechange", processRequest, false);
     }

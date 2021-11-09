@@ -4,9 +4,9 @@ import { status } from "../utils/enums";
 
 const StatusIndicator = props => {
     const classes = useStyles();
-    const className = props.status === status.OK ? classes.ok
-        : props.status === status.FAIL ? classes.fail
-        : '';
+    const className = props.status === 'OK' ? classes.ok
+        : props.status === 'FAIL' ? classes.fail
+        : classes.pending;
 
     return (
         <Container className={className}>

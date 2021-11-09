@@ -15,7 +15,7 @@ function App() {
 
   const sendRequest = () => {
     xhr = new XMLHttpRequest();
-    xhr.open("GET", "/api/services");
+    xhr.open("GET", "/services/get");
     xhr.send();
     xhr.addEventListener("readystatechange", processRequest, false);
   }

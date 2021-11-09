@@ -16,20 +16,33 @@ import io.vertx.ext.web.handler.BodyHandler;
 public class MainVerticle extends AbstractVerticle {
 
   private final Logger LOGGER = LoggerFactory.getLogger( MainVerticle.class );
+  private final Integer MILLIS = 1000;
+  private final Integer INTERVAl = 20;
+  private Poller poller;
+  private Database database;
+  private ServiceRepository serviceRepository;
 
   @Override
   public void start() throws Exception {
 
-    vertx.deployVerticle(new ServiceRepository(new Database(vertx)));
+    poller = new Poller();
+    database = new Database(vertx);
+    serviceRepository = new ServiceRepository(database);
+  
+    vertx.deployVerticle(serviceRepository);
 
     HttpServer server = vertx.createHttpServer();
     Router router = Router.router(vertx);
 
     router.route().handler(BodyHandler.create());
 
-    router.get("/api/services").handler(ctx -> getServices(ctx, vertx));
+    vertx.setPeriodic(INTERVAl * MILLIS, handler -> {
+      poller.pollServices(serviceRepository.getServices(), vertx, database);
+    });
 
-    router.post("/api/services").handler(ctx -> postService(ctx, vertx));
+    router.get("/services/get").handler(ctx -> getServices(ctx, vertx));
+
+    router.post("/services/create").handler(ctx -> postService(ctx, vertx));
 
     server.requestHandler(router).listen(8080, http -> {
       if (http.succeeded()) {
@@ -39,6 +52,8 @@ public class MainVerticle extends AbstractVerticle {
         LOGGER.info("Error: " + http.cause());
       }
     });
+
+
   }
 
   private void getServices(RoutingContext ctx, Vertx vertx) {
