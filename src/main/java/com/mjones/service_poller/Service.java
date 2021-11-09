@@ -1,31 +1,12 @@
 package com.mjones.service_poller;
 
-import java.util.UUID;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-
-@Entity
 public class Service {
 
-    @Id
-    @Column(unique = true, nullable = false)
-    private UUID id;
-
-    @Column(nullable = false)
+    private String id;
     private String name;
-
-    @Column(nullable = false)
     private String url;
-
-    @Column
     private Status status;
-
-    @Column(nullable = false)
     private String created;
-
-    @Column(nullable = false)
     private String lastUpdated;
 
     public Service() {}
@@ -36,7 +17,7 @@ public class Service {
         this.url = url;
     }
 
-    public UUID getId() {
+    public String getId() {
         return id;
     }
 
@@ -60,7 +41,7 @@ public class Service {
         return lastUpdated;
     }
     
-    public void setId(UUID id) {
+    public void setId(String id) {
         this.id = id;
     }
 

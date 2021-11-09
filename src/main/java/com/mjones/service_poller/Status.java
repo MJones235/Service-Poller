@@ -2,5 +2,6 @@ package com.mjones.service_poller;
 
 public enum Status {
     OK,
-    FAIL
+    FAIL,
+    PENDING
 }

@@ -20,7 +20,7 @@ public class MainVerticle extends AbstractVerticle {
   @Override
   public void start() throws Exception {
 
-    vertx.deployVerticle(new ServiceRepository());
+    vertx.deployVerticle(new ServiceRepository(new Database(vertx)));
 
     HttpServer server = vertx.createHttpServer();
     Router router = Router.router(vertx);
@@ -36,6 +36,7 @@ public class MainVerticle extends AbstractVerticle {
         LOGGER.info("Service poller HTTP server started on port 8080");
       } else {
         LOGGER.info("Service poller HTTP server failed to start");
+        LOGGER.info("Error: " + http.cause());
       }
     });
   }
@@ -57,16 +58,9 @@ public class MainVerticle extends AbstractVerticle {
   private void postService(RoutingContext ctx, Vertx vertx) {
     final String bodyJson = ctx.getBodyAsString();
     final Service service = Json.decodeValue(bodyJson, Service.class);
-    if (StringUtil.isNullOrEmpty(service.getName()) || StringUtil.isNullOrEmpty(service.getUrl())) {
-      ctx.response()
-        .setStatusCode(400)
-        .putHeader("content-type", "application/json")
-        .end("{ 'error' : 'Please provide a service name and url' }");
-    } else if (!urlValidator(service.getUrl())) {
-      ctx.response()
-        .setStatusCode(400)
-        .putHeader("content-type", "application/json")
-        .end("{ 'error' : 'Invalid url' }");
+    String errorMessage = getInputError(service);
+    if(errorMessage != null) {
+      returnError(ctx, errorMessage);
     } else {
       vertx.eventBus().request("service.service-add", Json.encode(service), 
         res -> {
@@ -83,8 +77,22 @@ public class MainVerticle extends AbstractVerticle {
     }
   }
 
-  private static boolean urlValidator(String url) {
-    UrlValidator validator = new UrlValidator();
-    return validator.isValid(url);
+  private static void returnError(RoutingContext ctx, String message) {
+    ctx.response()
+        .setStatusCode(400)
+        .putHeader("content-type", "application/json")
+        .end(message);
+  }
+
+  private static String getInputError(Service service) {
+    if (StringUtil.isNullOrEmpty(service.getName())) {
+      return "{ 'error' : 'Please provide a name for the service' }";
+    } else if (StringUtil.isNullOrEmpty(service.getUrl())) {
+      return "{ 'error' : 'Please provide a url for the service' }";
+    } else if (!(new UrlValidator()).isValid(service.getUrl())) {
+      return "{ 'error' : 'Invalid url' }";
+    } else {
+      return null;
+    }
   }
 }

@@ -30,11 +30,11 @@ application {
 dependencies {
   implementation(platform("io.vertx:vertx-stack-depchain:$vertxVersion"))
   implementation("io.vertx:vertx-web")
-  implementation("io.vertx:vertx-mysql-client")
+  implementation("io.vertx:vertx-jdbc-client:4.2.1")
   implementation("commons-validator:commons-validator:1.7")
   implementation("com.fasterxml.jackson.core:jackson-databind:2.0.1")
-  implementation("io.vertx:vertx-jdbc-client:4.2.1")
-  implementation("org.hibernate.reactive:hibernate-reactive-core:1.0.1.Final")
+  implementation("org.xerial:sqlite-jdbc:3.7.2")
+
   testImplementation("io.vertx:vertx-junit5")
   testImplementation("org.junit.jupiter:junit-jupiter:$junitJupiterVersion")
 }
