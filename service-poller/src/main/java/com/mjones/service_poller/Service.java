@@ -1,5 +1,7 @@
 package com.mjones.service_poller;
 
+import com.mjones.service_poller.Utils.Status;
+
 public class Service {
 
     private String id;

@@ -4,7 +4,9 @@ import org.apache.commons.validator.routines.UrlValidator;
 
 import io.netty.util.internal.StringUtil;
 import io.vertx.core.AbstractVerticle;
+import io.vertx.core.AsyncResult;
 import io.vertx.core.Vertx;
+import io.vertx.core.eventbus.Message;
 import io.vertx.core.http.HttpServer;
 import io.vertx.core.impl.logging.Logger;
 import io.vertx.core.impl.logging.LoggerFactory;
@@ -36,14 +38,25 @@ public class MainVerticle extends AbstractVerticle {
 
     router.route().handler(BodyHandler.create());
 
+    //
+    // Poll services every 60 seconds
+    //
     vertx.setPeriodic(INTERVAl * MILLIS, handler -> {
       poller.pollServices(serviceRepository.getServices(), vertx, database);
     });
 
+
+    //
+    // Handle api requests
+    //
     router.get("/services/get").handler(ctx -> getServices(ctx, vertx));
     router.post("/services/create").handler(ctx -> postService(ctx, vertx));
     router.post("/services/delete").handler(ctx -> deleteService(ctx, vertx));
 
+
+    //
+    // Start http server
+    //
     server.requestHandler(router).listen(8080, http -> {
       if (http.succeeded()) {
         LOGGER.info("Service poller HTTP server started on port 8080");
@@ -54,13 +67,14 @@ public class MainVerticle extends AbstractVerticle {
     });
   }
 
+  //
+  // Get service data
+  //
   private void getServices(RoutingContext ctx, Vertx vertx) {
     vertx.eventBus().request("service.services-get", "",
       res -> {
         if (res.succeeded()) {
-          ctx.response()
-            .putHeader("content-type", "application/json")
-            .end(res.result().body().toString());
+          returnResponse(ctx, res);
         } else {
           ctx.fail(res.cause());
         }
@@ -68,6 +82,9 @@ public class MainVerticle extends AbstractVerticle {
     );
   }
 
+  //
+  // Create new service
+  //
   private void postService(RoutingContext ctx, Vertx vertx) {
     final String bodyJson = ctx.getBodyAsString();
     final Service service = Json.decodeValue(bodyJson, Service.class);
@@ -78,9 +95,8 @@ public class MainVerticle extends AbstractVerticle {
       vertx.eventBus().request("service.service-add", Json.encode(service), 
         res -> {
           if (res.succeeded()) {
-            ctx.response()
-              .putHeader("content-type", "application/json")
-              .end(res.result().body().toString());
+              returnResponse(ctx, res);
+              poller.pollServices(serviceRepository.getServices(), vertx, database);
           } else {
             ctx.fail(res.cause());
           }
@@ -89,17 +105,27 @@ public class MainVerticle extends AbstractVerticle {
     }
   }
 
+  //
+  // Delete service
+  //
   private void deleteService(RoutingContext ctx, Vertx vertx) {
     final String bodyJson = ctx.getBodyAsString();
     final Service service = Json.decodeValue(bodyJson, Service.class);
     vertx.eventBus().request("services.services-delete", Json.encode(service),
       res -> {
         if (res.succeeded()) {
-          LOGGER.info("Deleted service with id " + service.getId());
+          returnResponse(ctx, res);
         } else {
-          LOGGER.info(res.cause());
+          ctx.fail(res.cause());
         }
       });
+  }
+  
+
+  private static void returnResponse(RoutingContext ctx, AsyncResult<Message<Object>> res) {
+    ctx.response()
+      .putHeader("content-type", "application/json")
+      .end(res.result().body().toString());
   }
 
   private static void returnError(RoutingContext ctx, String message) {

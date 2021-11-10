@@ -30,7 +30,7 @@ function App() {
     sendRequest();
     const interval = setInterval(() => {
       sendRequest();
-    }, 5000);
+    }, 10000);
     return () => clearInterval(interval);
   }, []);
 

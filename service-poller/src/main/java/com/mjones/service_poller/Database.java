@@ -13,7 +13,8 @@ public class Database {
 
   private final SQLClient client;
 
-  public Database(Vertx vertx){
+  public Database(Vertx vertx) {
+
     JsonObject config = new JsonObject()
         .put("url", "jdbc:sqlite:services.db")
         .put("driver_class", "org.sqlite.JDBC")
@@ -39,7 +40,7 @@ public class Database {
     }
 
     client.queryWithParams(query, params, result -> {
-      if(result.failed()){
+      if (result.failed()) {
         queryResult.fail(result.cause());
       } else {
         queryResult.complete(result.result());
