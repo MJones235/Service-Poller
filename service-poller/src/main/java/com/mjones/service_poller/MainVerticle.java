@@ -17,7 +17,7 @@ public class MainVerticle extends AbstractVerticle {
 
   private final Logger LOGGER = LoggerFactory.getLogger( MainVerticle.class );
   private final Integer MILLIS = 1000;
-  private final Integer INTERVAl = 20;
+  private final Integer INTERVAl = 60;
   private Poller poller;
   private Database database;
   private ServiceRepository serviceRepository;
@@ -78,7 +78,6 @@ public class MainVerticle extends AbstractVerticle {
       vertx.eventBus().request("service.service-add", Json.encode(service), 
         res -> {
           if (res.succeeded()) {
-            LOGGER.info(res.result().body().toString());
             ctx.response()
               .putHeader("content-type", "application/json")
               .end(res.result().body().toString());

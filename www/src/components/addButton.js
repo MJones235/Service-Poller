@@ -27,7 +27,6 @@ const AddButton = props => {
 
     const processRequest = () => {
         if (xhr.readyState === 4) {
-            console.log(xhr);
             var response = JSON.parse(xhr.responseText.replaceAll("\'", "\""));
             if (xhr.status === 200) {
                 props.sendRequest();

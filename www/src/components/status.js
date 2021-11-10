@@ -1,6 +1,5 @@
 import { Container, Typography } from "@mui/material"
 import { useStyles } from "../styles/styles";
-import { status } from "../utils/enums";
 
 const StatusIndicator = props => {
     const classes = useStyles();
