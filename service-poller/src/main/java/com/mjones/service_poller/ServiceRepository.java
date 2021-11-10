@@ -76,6 +76,6 @@ public class ServiceRepository extends AbstractVerticle {
 
     private void handleError(Message<Object> msg, Throwable res) {
         System.out.println(res.getMessage());
-        msg.reply(Json.encode("{error: " + res.getMessage() + "}"));
+        msg.reply(Json.encode("{\"error\": \"" + res.getMessage() + "\"}"));
     }
 }
